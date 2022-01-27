@@ -85,20 +85,22 @@
         <div class="col-12">
             <nav aria-label="...">
                 <ul class="pagination">
-
-                    <li class="page-item disabled">
-                        <a class="page-link" href="#" tabindex="-1">Previous</a>
+                    <li th:classappend="${currentPage eq 1} ? 'disabled'" class="page-item">
+                        <a class="page-link"
+                           th:href="@{/product(nameFilter=${param.nameFilter}, page=${currentPage - 1}, size=${param.size})}"
+                           tabindex="-1">Previous</a>
                     </li>
 
                     <li th:each="num : ${#numbers.sequence(1, products.totalPages)}"
                         th:classappend="${num == products.number + 1} ? 'active'" class="page-item">
                         <a class="page-link"
-                           th:href="@{/product(nameFilter=${param.nameFilter}, page=${num}, size=${param.size})}"
+                           th:href="@{/product(nameFilter=${param.nameFilter}, page=${num}, size=${param.size}, sort=${param.sort})}"
                            th:text="${num}">1</a>
                     </li>
 
-                    <li class="page-item">
-                        <a class="page-link" href="#">Next</a>
+                    <li th:classappend="${currentPage eq products.totalPages} ? 'disabled'" class="page-item">
+                        <a class="page-link"
+                           th:href="@{/product(nameFilter=${param.nameFilter}, page=${currentPage + 1}, size=${param.size})}">Next</a>
                     </li>
                 </ul>
             </nav>
