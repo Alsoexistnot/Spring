@@ -40,7 +40,7 @@ public class ProductController {
                            @RequestParam("sort") Optional<String> sort) {
         logger.info("Product filter with name pattern {}", nameFilter.orElse(null));
 
-//        int currentPage = page.orElse(1);
+        int currentPage = page.orElse(1);
 
         model.addAttribute("products", productService.findAll(
                 nameFilter,
@@ -48,7 +48,7 @@ public class ProductController {
                 size.orElse(5),
                 sort.orElse("id")
         ));
-//        model.addAttribute("currentPage", currentPage);
+        model.addAttribute("currentPage", currentPage);
         return "product";
     }
 
