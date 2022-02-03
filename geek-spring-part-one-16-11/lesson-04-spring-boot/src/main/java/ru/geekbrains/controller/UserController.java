@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 import ru.geekbrains.persist.RoleRepository;
 import ru.geekbrains.persist.User;
 import ru.geekbrains.persist.UserRepository;
+import ru.geekbrains.service.UserService;
+import ru.geekbrains.service.dto.UserDto;
 
 import javax.validation.Valid;
 
@@ -21,31 +23,27 @@ public class UserController {
 
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
-    private final UserRepository userRepository;
-
     private final RoleRepository roleRepository;
 
-    private final PasswordEncoder encoder;
+    private final UserService userService;
 
     @Autowired
-    public UserController(UserRepository userRepository,
-                          RoleRepository roleRepository,
-                          PasswordEncoder encoder) {
-        this.userRepository = userRepository;
+    public UserController(RoleRepository roleRepository,
+                          UserService userService) {
         this.roleRepository = roleRepository;
-        this.encoder = encoder;
+        this.userService = userService;
     }
 
     @GetMapping
     public String listPage(Model model) {
-        model.addAttribute("users", userRepository.findAll());
+        model.addAttribute("users", userService.findAll());
         return "user";
     }
 
     @GetMapping("/{id}")
     public String edit(@PathVariable("id") Long id, Model model) {
         model.addAttribute("roles", roleRepository.findAll());
-        model.addAttribute("user", userRepository.findById(id)
+        model.addAttribute("user", userService.findById(id)
                 .orElseThrow(() -> new NotFoundException("User not found")));
         return "user_form";
     }
@@ -53,23 +51,22 @@ public class UserController {
     @GetMapping("/new")
     public String create(Model model) {
         model.addAttribute("roles", roleRepository.findAll());
-        model.addAttribute("user", new User());
+        model.addAttribute("user", new UserDto());
         return "user_form";
     }
 
     @PostMapping
-    public String save(@Valid User user, BindingResult result) {
+    public String save(@Valid UserDto user, BindingResult result) {
         if (result.hasErrors()) {
             return "user_form";
         }
-        user.setPassword(encoder.encode(user.getPassword()));
-        userRepository.save(user);
+        userService.save(user);
         return "redirect:/user";
     }
 
     @DeleteMapping("/{id}")
     public String delete(@PathVariable("id") Long id) {
-        userRepository.deleteById(id);
+        userService.deleteById(id);
         return "redirect:/user";
     }
 

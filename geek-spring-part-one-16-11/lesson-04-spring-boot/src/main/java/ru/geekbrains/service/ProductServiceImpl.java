@@ -8,7 +8,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import ru.geekbrains.persist.*;
 import ru.geekbrains.service.dto.ProductDto;
-
+import javax.annotation.PostConstruct;
+import java.math.BigDecimal;
 import java.util.Optional;
 
 @Service
@@ -24,6 +25,17 @@ public class ProductServiceImpl implements ProductService {
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
     }
+
+//    @PostConstruct
+//    public void init(){
+//        productRepository.save(new Product(null, "Кола", "Напиток", new BigDecimal("89"), null));
+//        productRepository.save(new Product(null, "Фанта", "Напиток", new BigDecimal("79"), null));
+//        productRepository.save(new Product(null, "Спрайт", "Напиток", new BigDecimal("79"), null));
+//        productRepository.save(new Product(null, "Картошка", "Овощи", new BigDecimal("40"), null));
+//        productRepository.save(new Product(null, "Морковь", "Овощи", new BigDecimal("60"), null));
+//        productRepository.save(new Product(null, "Телефон", "Техника", new BigDecimal("49799"), null));
+//        productRepository.save(new Product(null, "Ноутбук", "Техника", new BigDecimal("98900"), null));
+//    }
 
     @Override
     public Page<ProductDto> findAll(Optional<String> nameFilter, Integer page,

@@ -17,13 +17,21 @@ public class SecurityConfiguration {
                            UserDetailsService userDetailsService,
                            PasswordEncoder encoder) throws Exception {
         auth.inMemoryAuthentication()
-                .withUser("mem_user")
-                .password(encoder.encode("password"))
-                .roles("SUPER_ADMIN")
+                .withUser("admin")
+                .password(encoder.encode("123"))
+                .roles("ADMIN")
                 .and()
                 .withUser("guest")
-                .password(encoder.encode("password"))
-                .roles("GUEST");
+                .password(encoder.encode("123"))
+                .roles("GUEST")
+                .and()
+                .withUser("manager")
+                .password(encoder.encode("123"))
+                .roles("MANAGER")
+                .and()
+                .withUser("super-admin")
+                .password(encoder.encode("123"))
+                .roles("ADMIN", "SUPER_ADMIN");
 
         auth.userDetailsService(userDetailsService);
     }
@@ -37,10 +45,9 @@ public class SecurityConfiguration {
                     .authorizeRequests()
                     .antMatchers("/**/*.css", "/**/*.js").permitAll()
                     .antMatchers("/product/**").permitAll()
-                    .antMatchers("/user/**").hasAnyRole("SUPER_ADMIN")
+                    .antMatchers("/user/**").hasAnyRole("ADMIN")
                     .and()
                     .formLogin()
-                    //.loginPage("/login")
                     .defaultSuccessUrl("/product")
                     .and()
                     .exceptionHandling()
