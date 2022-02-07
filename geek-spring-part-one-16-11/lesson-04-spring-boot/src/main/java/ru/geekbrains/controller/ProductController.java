@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -40,15 +41,18 @@ public class ProductController {
                            @RequestParam("sort") Optional<String> sort) {
         logger.info("Product filter with name pattern {}", nameFilter.orElse(null));
 
+        int currentPage = page.orElse(1);
         model.addAttribute("products", productService.findAll(
                 nameFilter,
                 page.orElse(1) - 1,
                 size.orElse(5),
                 sort.filter(s -> !s.isBlank()).orElse("id")
         ));
+        model.addAttribute("currentPage", currentPage);
         return "product";
     }
 
+    @Secured({"ROLE_MANAGER", "ROLE_ADMIN"})
     @GetMapping("/{id}")
     public String edit(@PathVariable("id") Long id, Model model) {
         model.addAttribute("product", productService.findById(id)
@@ -57,6 +61,7 @@ public class ProductController {
         return "product_form";
     }
 
+    @Secured({"ROLE_MANAGER", "ROLE_ADMIN"})
     @GetMapping("/new")
     public String create(Model model) {
         model.addAttribute("product", new ProductDto());
@@ -64,6 +69,7 @@ public class ProductController {
         return "product_form";
     }
 
+    @Secured({"ROLE_MANAGER", "ROLE_ADMIN"})
     @PostMapping
     public String save(@Valid ProductDto product, BindingResult result) {
         if (result.hasErrors()) {
@@ -73,6 +79,7 @@ public class ProductController {
         return "redirect:/product";
     }
 
+    @Secured({"ROLE_MANAGER", "ROLE_ADMIN"})
     @DeleteMapping("/{id}")
     public String delete(@PathVariable("id") Long id) {
         productService.deleteById(id);
